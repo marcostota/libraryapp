@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import io.github.marcosjunior.libraryapi.controller.dto.AutorDTO;
 import io.github.marcosjunior.libraryapi.entity.Autor;
 import io.github.marcosjunior.libraryapi.service.AutorService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("autores")
@@ -33,7 +34,7 @@ public class AutorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody AutorDTO autorDTO) {
+    public ResponseEntity<?> salvar(@RequestBody @Valid AutorDTO autorDTO) {
         Autor autorEntidade = autorDTO.mapearParaAutor();
 
         autorService.salvar(autorEntidade);
@@ -77,7 +78,7 @@ public class AutorController {
     public ResponseEntity<List<AutorDTO>> pesquisar(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
-        List<Autor> resultAutors = autorService.pesquisa(nome, nacionalidade);
+        List<Autor> resultAutors = autorService.pesquisaByExample(nome, nacionalidade);
         List<AutorDTO> autorDTOList = resultAutors
                 .stream().map(autor -> new AutorDTO(
                         autor.getId(),
